@@ -1,1 +1,3 @@
 *.floo
+.git/*
+.git

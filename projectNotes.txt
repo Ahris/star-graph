@@ -1,0 +1,65 @@
+
+Particles / inspirational
+  http://aerotwist.com/tutorials/creating-particles-with-tree-js/
+  http://wwww.asterk.com/ 
+  http://t/threejs.org/examples/webgl_particles_random.html
+
+Generate 'universe' from Metacritic scores using D3
+
+Each game from Metacritic will represent a star in the universe
+    - Size of the star is determined by the score of the game
+    - Clusters of stars are formed by game genres 
+
+The universe can be traversed by the user 
+   - Mouse panning
+   - Scrolling
+   - Click on a star to see detailed game info (name, score, publisher, etc.)
+
+Steps:
+   - Get the information from Metacritic using the API (~1.5 days)
+   - Set up web server (~2 hrs)
+   - Design the UI (ongoing process)
+   - Do the rest of the project (?? days)
+
+Inspirational images
+  http://www.georgeandjonatha.com/#1
+  threjs.org
+  http://w/www.zachstronaut.com/posts/images/3d-canvas-galaxy.png
+ 
+Metacritic AI
+    https://www.mashape.com/byroredux/metacritic/support
+
+Game score distrubution graphs
+    ALL scors 
+    http:///wwww.giantbomb.com/images/11802832
+    http:/://w/www.giantbomb.com/profile/dry_carton/blog/metacritic-score-distribution-graphs/82409/
+
+About golden spiral
+    http://www.intmath.com/blog/mathematics/golde-spiral-6512
+    https://en.wikipipedia.org/wikGolden_spiral
+    http://www.2dcucurves.com/spiral/spirallo.html
+
+Interactive spiral demo
+    https://www.desmos.com/calculator/roxwgwssd
+
+
+Tutorial links
+Skydome - http://www.ianww.com/2014/02/17/making-a-skydome-in-three-dot-js/
+Particles for star system - http://www.instructables.com/id/Instructables-Universe-in-Threejs/?ALLSTEPS
+gausian random numbrs - http://www.protonfish.com/random.shtml
+
+
+
+
+ curl  --get --include "https://byroredux-metacritic.p.mashape.com/game-list/ps4/coming-soon" \
+  -H "X-Mashape-Key: obYV1JOoYlmshGaQyAh5TLV0Yythp1gU6dbjsncZkEtK5ajhlN"
+
+  Stack overflow post /////////////////////////////////////////////////////////
+  We're trying to use a simple logarithmic spiral equation to plot some stars in a galaxy. We want the position of the stars to be based on the scores of video games from metacritic. So we have the score, and we want highly rated games to be plotted near the center of the galaxy, while lowly rated games are near the edge. 
+
+  Here's an image of a what we have so far.
+  INSERT IMAGE
+
+  The theta value is random, and the distance away from the center of the universe is based on the score. Help.
+
+

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Game Universe</title>
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+		<link rel=icon href="images/favicon-logo-black.png" sizes="32x32" 
+			  	type="image/png">
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	</head>
+	<body>
+		<img id="logo" src="images/logoWithText.png">
+
+		<img id="hoverSelector" class="selector" src="images/selectionStarcrop.png">
+
+		<div id="pop-up" class="menu">
+			<img id="menuSelector" class="selector" src="images/selectionStarcrop.png">
+
+			<!-- <svg id="svgLine" class="menu" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg> -->
+			<div id="svgLine">
+				<svg id="svg">
+				</svg>
+			</div>
+
+			<div id="infoBox" class="menu">
+				<div id="gameInfo" class="textStyle menu">
+				</div>
+			</div>
+
+			<div id="decorativeBox" class="menu">
+			</div>
+		</div>
+
+		<div id="credits" class="textStyle">
+			by 
+			<a class="textStyle" href="http://students.cec.wustl.edu/~alicewang/Portfolio/">
+				alice wang
+			</a> 
+			 / 
+			<a class="textStyle" href="http://jmecom.github.io">
+				jordan mecom
+			</a>
+
+			 / winter break 2014
+		</div>
+		
+		<div id="ThreeJS"></div>
+
+		<script type="application/x-glsl" id="sky-vertex">
+		varying vec2 vUV;
+
+		void main() {
+		  vUV = uv;
+		  vec4 pos = vec4(position, 1.0);
+		  gl_Position = projectionMatrix * modelViewMatrix * pos;
+		}
+		</script>
+
+		<script type="application/x-glsl" id="sky-fragment">
+		uniform sampler2D texture;
+		varying vec2 vUV;
+
+		void main() {
+		  vec4 sample = texture2D(texture, vUV);
+		  gl_FragColor = vec4(sample.xyz, sample.w);
+		}
+		</script>
+
+		<script type="x-shader/x-vertex" id="vertexshader">
+		    attribute float alpha;
+		    attribute float size;
+		    attribute vec3 ca;
+		    varying vec3 vColor;
+		    varying float vAlpha;
+
+		    void main() {
+		        vColor = ca;
+		        vAlpha = alpha;
+		        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+		        gl_PointSize = size * (1.0+ 300.0 / length( mvPosition.xyz ) );
+		        gl_Position = projectionMatrix * mvPosition;
+		    }
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentshader">
+		    uniform vec3 color;
+		    uniform sampler2D texture;
+		    varying vec3 vColor;
+		    varying float vAlpha;
+
+		    void main() {
+		        gl_FragColor = vec4( vColor, vAlpha );
+		        gl_FragColor = vAlpha * texture2D( texture, gl_PointCoord );
+		    }
+		</script>
+		
+		<script src="js/three.min.js"></script>
+		<script src="js/TrackballControls.js"></script>
+		<script src="js/THREEx.WindowResize.js"></script>
+		<script src='js/THREEx.ObjCoord.js'></script>
+		<script src="js/script.js"></script>
+
+
+
+	</body>
+
+</html>
