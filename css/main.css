@@ -59,7 +59,7 @@ a:hover {
 }
 
 #pop-up {
-	visibility: hidden;
+	/*visibility: hidden;*/
 	position: absolute;
 	z-index: 2;
 }

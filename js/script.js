@@ -374,15 +374,12 @@ function onDocumentMouseDown(event) {
 		// Close the previous menu
 		if(menuOpen) {
 			menuOpen = false;
-			popUp.style.visibility = "hidden";
+			// popUp.style.visibility = "hidden";
 		}
 
 		// Display the new menu
 		var menuSelector = document.getElementById("menuSelector");
 		var infoBox = document.getElementById("infoBox");
-
-		menuSelector.style.width = getObjectHeight(objClicked) + 20 + "px";
-		setSelectorPosition(objClicked, menuSelector);
 
 		document.getElementById("gameInfo").innerHTML = 
 			"<a href=\"" + gameData.url + "\" class=\"black\">"
@@ -392,6 +389,9 @@ function onDocumentMouseDown(event) {
 		var midPoint = setMenuPosition(objClicked, infoBox);
 
 		displayLine(objClicked, midPoint);
+
+		menuSelector.style.width = getObjectHeight(objClicked) + 20 + "px";
+		setSelectorPosition(objClicked, menuSelector);
 
 		menuSelector.style.visibility = "visible";
 		popUp.style.visibility = "visible";
@@ -411,14 +411,32 @@ function displayLine(star, midPoint) {
 	// Position of star 
 	var position = THREEx.ObjCoord.cssPosition(star, camera, renderer);
 
-	// Create SVG line
-	var newLine = "<line class=\"line menu\" x1=\"" + position.x + "\" y1=\"" 
-	+ position.y + "\" x2=\"" + midPoint.x + "\" y2=\"" + midPoint.y + "\" />"; 
+	// // Create SVG line
+	// var newLine = "<line class=\"line menu\" x1=\"" + position.x + "\" y1=\"" 
+	// + position.y + "\" x2=\"" + midPoint.x + "\" y2=\"" + midPoint.y + "\" />"; 
    
-    //document.getElementById("svgLine").innerHTML = newLine;
-    document.getElementById("svg").innerHTML = newLine;
-    document.getElementById("svgLine").innerHTML = document.getElementById("svgLine").innerHTML;
-    //console.log(document.getElementById("svgLine"));
+ //    //document.getElementById("svgLine").innerHTML = newLine;
+ //    document.getElementById("svg").innerHTML = newLine;
+ //    document.getElementById("svgLine").innerHTML = document.getElementById("svgLine").innerHTML;
+ //    //console.log(document.getElementById("svgLine"));
+ 	// var popUp = document.getElementById("pop-up");
+ 	// var lineSVG = document.getElementById("line");
+ 	// var lineDoc = lineSVG.contentDocument;
+ 	// // console.log(document.getElementById("pop-up").style.visibility);
+ 	// var line = lineDoc.getElementById("line");
+
+
+	var line = document.getElementById("lineObj").contentDocument.getElementById("line");
+ 	line.setAttribute("x1", position.x);
+ 	line.setAttribute("x2", midPoint.x);
+ 	line.setAttribute("y1", position.y);
+ 	line.setAttribute("y2", midPoint.y);
+ 	//line.setAttribute("visibility", "visible");
+
+ 	var svgTag = document.getElementById("lineObj").contentDocument.getElementById("svgTag");
+ 	svgTag.setAttribute("height", window.innerHeight);
+ 	svgTag.setAttribute("width", window.innerWidth);
+ 	// console.log(line);
 }
 
 
@@ -620,7 +638,7 @@ function getObjectHeight(object) {
 	var vFOV = camera.fov * Math.PI / 180;
 
 	// visible height
-	var visualHeight = 2 * Math.tan( vFOV / 2 ) * getDistanceFromCamera(object);
+	var visualHeight = 2 * Math.tan(vFOV / 2) * getDistanceFromCamera(object);
 
 	// 5 is the size of the star... yes its hard coded... FIXME
 	var heightRatio = 5 / visualHeight;
@@ -642,6 +660,17 @@ function render() {
 
 
 document.addEventListener("DOMContentLoaded", function(event) { 
-	init();
+
+ 	var lineObj = document.getElementById("lineObj");
+	var lineDoc = lineObj.contentDocument;
+
+	var line = lineDoc.getElementById("line");
+	line.setAttribute("id", "line")
+	line.setAttribute("x1", 0);
+	line.setAttribute("x2", 200);
+	line.setAttribute("y1", 0);
+	line.setAttribute("y2", 200);
+ 
+	init();	
 	animate();
 });
