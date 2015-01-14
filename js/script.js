@@ -1,8 +1,4 @@
 // TODO
-// coloring
-// redraw the star texture to draw the glow with gray
-// menus on click wit da deets
-// make it pretty
 // get rid of scroll bar
 
 // Shared variables for 3D

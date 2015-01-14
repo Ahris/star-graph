@@ -29,6 +29,17 @@ canvas {
 	width: 350px;
 }
 
+#description {
+	z-index: 2;
+	position: absolute;
+	bottom: 100px;
+	background-color: rgba(0,0,0,.50);
+	padding: 20px 20px 20px 50px;
+	max-width: 280px;
+	font-size: .68em;
+	font-style: normal;
+}
+
 #ThreeJS {
 	position: absolute;
 	top: 0px;
