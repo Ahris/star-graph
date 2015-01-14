@@ -12,7 +12,10 @@ var scene, camera, controls, renderer;
 var mouse = new THREE.Vector2(), INTERSECTED;
 var raycaster;
 
+// 
 var menuOpen;
+var isMouseDown = false;
+var starSelected = null;
 
 // Array of Three.js particles
 var particles = [];
@@ -348,6 +351,8 @@ function setupTrackballControls() {
 function onDocumentMouseDown(event) {
 	event.preventDefault();
 
+	isMouseDown = true;
+
 	var vector = new THREE.Vector3();
 	vector.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1, 0.5);
 	vector.unproject(camera);
@@ -361,10 +366,9 @@ function onDocumentMouseDown(event) {
 	// If the raycaster detects that you clicked on a star
 	if (intersects.length > 0) {
 		var objClicked = intersects[0].object;
-		gameID = objClicked.uuid; // Get the star's UUID 
+		gameID = objClicked.uuid;  // Get the star's UUID 
+		starSelected = objClicked; 
 		var gameData = gameDataMap[gameID];
-
-		//	console.log(gameDataMap[gameID]);   // Look up the game in gameDataMap using that id
 
 		// Set random color for a star
 		objClicked.material.color.setHex(Math.random() * 0xffffff);
@@ -374,7 +378,7 @@ function onDocumentMouseDown(event) {
 		// Close the previous menu
 		if(menuOpen) {
 			menuOpen = false;
-			// popUp.style.visibility = "hidden";
+			popUp.style.visibility = "hidden";
 		}
 
 		// Display the new menu
@@ -383,7 +387,7 @@ function onDocumentMouseDown(event) {
 
 		document.getElementById("gameInfo").innerHTML = 
 			"<a href=\"" + gameData.url + "\" class=\"black\">"
-			+ gameData.name + " / " + gameData.platform + " / " + gameData.score
+			+ gameData.name.toLowerCase() + " / " + gameData.platform + " / " + gameData.score
 			+ "</a>";
 
 		var midPoint = setMenuPosition(objClicked, infoBox);
@@ -396,110 +400,13 @@ function onDocumentMouseDown(event) {
 		menuSelector.style.visibility = "visible";
 		popUp.style.visibility = "visible";
 		menuOpen = true;
-	}	
-}
-
-
-
-/**
- * Dispaly the line connecting the selector and the box
- * @param star -
- * @param infoBox - 
- * @param middlePoint - 
- */
-function displayLine(star, midPoint) {
-	// Position of star 
-	var position = THREEx.ObjCoord.cssPosition(star, camera, renderer);
-
-	// // Create SVG line
-	// var newLine = "<line class=\"line menu\" x1=\"" + position.x + "\" y1=\"" 
-	// + position.y + "\" x2=\"" + midPoint.x + "\" y2=\"" + midPoint.y + "\" />"; 
-   
- //    //document.getElementById("svgLine").innerHTML = newLine;
- //    document.getElementById("svg").innerHTML = newLine;
- //    document.getElementById("svgLine").innerHTML = document.getElementById("svgLine").innerHTML;
- //    //console.log(document.getElementById("svgLine"));
- 	// var popUp = document.getElementById("pop-up");
- 	// var lineSVG = document.getElementById("line");
- 	// var lineDoc = lineSVG.contentDocument;
- 	// // console.log(document.getElementById("pop-up").style.visibility);
- 	// var line = lineDoc.getElementById("line");
-
-
-	var line = document.getElementById("lineObj").contentDocument.getElementById("line");
- 	line.setAttribute("x1", position.x);
- 	line.setAttribute("x2", midPoint.x);
- 	line.setAttribute("y1", position.y);
- 	line.setAttribute("y2", midPoint.y);
- 	//line.setAttribute("visibility", "visible");
-
- 	var svgTag = document.getElementById("lineObj").contentDocument.getElementById("svgTag");
- 	svgTag.setAttribute("height", window.innerHeight);
- 	svgTag.setAttribute("width", window.innerWidth);
- 	// console.log(line);
-}
-
-
-
-/**
- * https://github.com/jeromeetienne/threex.objcoord
- */
-function setMenuPosition(star, menu) {
-	var position = THREEx.ObjCoord.cssPosition(star, camera, renderer);  // Position of star
-	var offsetX = 50;
-	var offsetY = 30;
-
-	var starHeight = getObjectHeight(star) / 2;
-
-	// Quadrant Checking
-	if (position.x >= window.innerWidth / 2) {      	
-		if (position.y >= window.innerHeight / 2) { 	// Bottom-right
-			menu.style.left = (position.x - menu.offsetWidth - starHeight - offsetX) + "px";
-			menu.style.top = (position.y - menu.offsetHeight - starHeight - offsetY) + "px";
-
-			xMid = position.x - starHeight - offsetX;
-			yMid = position.y - (menu.offsetHeight / 2) - starHeight - offsetY
-
-			return new THREE.Vector2(xMid, yMid);
-		} else {                                        // Upper-right 
-			menu.style.left = (position.x - menu.offsetWidth - starHeight - offsetX) + "px";
-			menu.style.top = (position.y + starHeight + offsetY) + "px";
-
-			xMid = position.x - starHeight - offsetX;
-			yMid = position.y + starHeight + offsetY + (menu.offsetHeight / 2);
-
-			return new THREE.Vector2(xMid, yMid);
-		}
-	} else {
-		if (position.y >= window.innerHeight / 2) { 	// Bottom-left
-			menu.style.left = (position.x + starHeight + offsetX) + "px";
-			menu.style.top = (position.y - menu.offsetHeight - starHeight - offsetY) + "px";
-
-			xMid = position.x + starHeight + offsetX;
-			yMid = position.y - starHeight - offsetY + (menu.offsetHeight / 2);
-
-			return new THREE.Vector2(xMid, yMid);
-		} else {                                        // Upper-left
-			menu.style.left = (position.x + starHeight + offsetX) + "px";
-			menu.style.top = (position.y - menu.offsetHeight - starHeight - offsetY) + "px";
-
-			xMid = position.x + starHeight + offsetX;
-			yMid = position.y - (menu.offsetHeight / 2) - starHeight - offsetY;
-
-			return new THREE.Vector2(xMid, yMid);
-		}
 	}
 }
 
 
 
-/**
- * https://github.com/jeromeetienne/threex.objcoord
- */
-function setSelectorPosition(object, selector) {
-	var position = THREEx.ObjCoord.cssPosition(object, camera, renderer);
-	selector.style.left = (position.x - selector.offsetWidth / 2) + "px";
-	selector.style.top = (position.y - selector.offsetHeight / 2) + "px";
+function onDocumentMouseUp(event) {
+	isMouseDown = false;
 }
 
 
@@ -543,7 +450,128 @@ function onDocumentMouseMove(event) {
 		}
 		INTERSECTED = null;
 	}
+
+	if (menuOpen && isMouseDown && starSelected != null) {  
+		var menuSelector = document.getElementById("menuSelector");
+		var infoBox = document.getElementById("infoBox");
+
+		var midPoint = setMenuPosition(starSelected, infoBox);
+
+		displayLine(starSelected, midPoint);
+
+		menuSelector.style.width = getObjectHeight(starSelected) + 20 + "px";
+		setSelectorPosition(starSelected, menuSelector);
+	}
 }
+
+function onDocumentMouseWheel(event) {
+	var starPos = THREEx.ObjCoord.cssPosition(starSelected, camera, renderer);
+	if (starPos.x > window.innerWidth || starPos.y > window.innerHeight || starPos.x < 0 || starPos.y < 0) {
+		starSelected = null;
+		menuOpen = false;
+		document.getElementById("pop-up").style.visibility = "hidden";
+		document.getElementById("menuSelector").style.visibility = "hidden";
+	}
+
+	if (menuOpen && starSelected != null) {
+		var menuSelector = document.getElementById("menuSelector");
+		var infoBox = document.getElementById("infoBox");
+
+		var midPoint = setMenuPosition(starSelected, infoBox);
+
+		displayLine(starSelected, midPoint);
+
+		menuSelector.style.width = getObjectHeight(starSelected) + 20 + "px";
+		setSelectorPosition(starSelected, menuSelector);
+	}
+}
+
+
+
+/**
+ * Dispaly the line connecting the selector and the box
+ * @param star -
+ * @param infoBox - 
+ * @param middlePoint - 
+ */
+function displayLine(star, midPoint) {
+	// Position of star 
+	var position = THREEx.ObjCoord.cssPosition(star, camera, renderer);
+
+	var line = document.getElementById("lineObj").contentDocument.getElementById("line");
+ 	line.setAttribute("x1", position.x);
+ 	line.setAttribute("x2", midPoint.x);
+ 	line.setAttribute("y1", position.y);
+ 	line.setAttribute("y2", midPoint.y);
+
+ 	var svgTag = document.getElementById("lineObj").contentDocument.getElementById("svgTag");
+ 	svgTag.setAttribute("height", window.innerHeight);
+ 	svgTag.setAttribute("width", window.innerWidth);
+}
+
+
+
+/**
+ * https://github.com/jeromeetienne/threex.objcoord
+ */
+function setMenuPosition(star, menu) {
+	var position = THREEx.ObjCoord.cssPosition(star, camera, renderer);  // Position of star
+	var offsetX = 50;
+	var offsetY = 30;
+
+	var starHeight = getObjectHeight(star) / 2;
+
+	// Quadrant Checking
+	if (position.x >= window.innerWidth / 2) {      	
+		if (position.y >= window.innerHeight / 2) { 	// Bottom-right
+			menu.style.left = (position.x - menu.offsetWidth - starHeight - offsetX) + "px";
+			menu.style.top = (position.y - menu.offsetHeight - starHeight - offsetY) + "px";
+
+			xMid = position.x - starHeight - offsetX;
+			yMid = position.y - (menu.offsetHeight / 2) - starHeight - offsetY
+
+			return new THREE.Vector2(xMid, yMid);
+		} else {                                        // Upper-right 
+			menu.style.left = (position.x - menu.offsetWidth - starHeight - offsetX) + "px";
+			menu.style.top = (position.y + starHeight + offsetY) + "px";
+
+			xMid = position.x - starHeight - offsetX;
+			yMid = position.y + starHeight + offsetY + (menu.offsetHeight / 2);
+
+			return new THREE.Vector2(xMid, yMid);
+		}
+	} else {
+		if (position.y >= window.innerHeight / 2) { 	// Bottom-left
+			menu.style.left = (position.x + starHeight + offsetX) + "px";
+			menu.style.top = (position.y - menu.offsetHeight - starHeight - offsetY) + "px";
+
+			xMid = position.x + starHeight + offsetX;
+			yMid = position.y - starHeight - offsetY - (menu.offsetHeight / 2);
+
+			return new THREE.Vector2(xMid, yMid);
+		} else {                                        // Upper-left
+			menu.style.left = (position.x + starHeight + offsetX) + "px";
+			menu.style.top = (position.y - menu.offsetHeight - starHeight - offsetY) + "px";
+
+			xMid = position.x + starHeight + offsetX;
+			yMid = position.y - (menu.offsetHeight / 2) - starHeight - offsetY;
+
+			return new THREE.Vector2(xMid, yMid);
+		}
+	}
+}
+
+
+
+/**
+ * https://github.com/jeromeetienne/threex.objcoord
+ */
+function setSelectorPosition(object, selector) {
+	var position = THREEx.ObjCoord.cssPosition(object, camera, renderer);
+	selector.style.left = (position.x - selector.offsetWidth / 2) + "px";
+	selector.style.top = (position.y - selector.offsetHeight / 2) + "px";
+}
+
 
 /**
  * Sets up the universe 
@@ -557,8 +585,9 @@ function init() {
 	camera.position.z = 119;
 
 	document.addEventListener('mousedown', onDocumentMouseDown, false);
-
-	document.addEventListener('mousemove', onDocumentMouseMove, false );
+	document.addEventListener('mouseup', onDocumentMouseUp, false);
+	document.addEventListener('mousemove', onDocumentMouseMove, false);
+	document.addEventListener('wheel', onDocumentMouseWheel, false);    // TODO: make sure this works on ALL browsers!
 
 	setupTrackballControls();
 
@@ -660,16 +689,15 @@ function render() {
 
 
 document.addEventListener("DOMContentLoaded", function(event) { 
-
  	var lineObj = document.getElementById("lineObj");
 	var lineDoc = lineObj.contentDocument;
 
 	var line = lineDoc.getElementById("line");
 	line.setAttribute("id", "line")
 	line.setAttribute("x1", 0);
-	line.setAttribute("x2", 200);
+	line.setAttribute("x2", 0);
 	line.setAttribute("y1", 0);
-	line.setAttribute("y2", 200);
+	line.setAttribute("y2", 0);
  
 	init();	
 	animate();

@@ -39,7 +39,7 @@ canvas {
 	font-family: monospaceTypewriter;
 	font-style: italic;
 	color: white;
-	font-size: .99em;
+	font-size: .7em;
 	letter-spacing: 0.3em;
 }
 
@@ -59,7 +59,7 @@ a:hover {
 }
 
 #pop-up {
-	/*visibility: hidden;*/
+	visibility: hidden;
 	position: absolute;
 	z-index: 2;
 }
@@ -83,8 +83,11 @@ a:hover {
 .line {
 	stroke: white;
 	stroke-width: 2;
-/*	fill: white;*/
 	position: fixed;
+}
+
+#lineObj {
+	pointer-events: none;
 }
 
 #svgLine {
@@ -94,7 +97,7 @@ a:hover {
 
 #infoBox {
 	background-color: rgba(255, 255, 255, .75);
-	padding: 10px 40px;
+	padding: 12px 50px;
 	max-width: 400px;
 	position: fixed;
 }
